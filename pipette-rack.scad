@@ -39,7 +39,10 @@ module customizer_cutoff(){}; // legacy marker
 // ==============================
 // Global constants
 // ==============================
+
 $fn = $preview ? 32 : 128;
+z_fight = $preview ? 0.05 : 0;
+
 sep = 20;
 
 X = rack_length;
@@ -105,19 +108,19 @@ module top_beam_cutouts() {
   // end-holes (square)
   translate([-X / 2 - radius_end / 2, 0, 0])
     rotate([0, 0, 45])
-      cylinder($fn=4, r=radius_inner, h=wall_z, center=true);
+      cylinder($fn=4, r=radius_inner, h=wall_z + z_fight, center=true);
   translate([X / 2 + radius_end / 2, 0, 0])
     rotate([0, 0, 45])
-      cylinder($fn=4, r=radius_inner, h=wall_z, center=true);
+      cylinder($fn=4, r=radius_inner, h=wall_z + z_fight, center=true);
 
   // tip slots
   for (i = [1:slot_count]) {
     x_pos = -X / 2 + (i - 0.5) * X / slot_count;
-    translate([x_pos, slot_depth / 2 - hanger_y - wall_y / 2, wall_z / 2])
-      cube([slot_width, slot_depth, wall_z * 2], center=true);
+    translate([x_pos, slot_depth / 2 - hanger_y - wall_y / 2 - z_fight, wall_z / 2])
+      cube([slot_width, slot_depth, wall_z * 2 + z_fight], center=true);
     if (is_double)
-      translate([x_pos, -slot_depth / 2 + hanger_y + wall_y / 2, wall_z / 2])
-        cube([slot_width, slot_depth, wall_z * 2], center=true);
+      translate([x_pos, -slot_depth / 2 + hanger_y + wall_y / 2 + z_fight, wall_z / 2])
+        cube([slot_width, slot_depth, wall_z * 2 + z_fight], center=true);
   }
 
   // side end cuts
