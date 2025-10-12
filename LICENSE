@@ -1,0 +1,25 @@
+# BREADS Licensing
+
+This project contains both software and hardware components licensed under different terms.
+
+## License Structure
+
+- **Software Components**: Licensed under GNU General Public License v3.0
+  - See: `LICENSES/LICENSE_SW`
+- **Hardware Components**: Licensed under CERN Open Hardware Licence v2 - Strongly Reciprocal
+  - See: `LICENSES/LICENSE_HW`
+
+## Scope
+
+Software components include all source code, firmware, scripts, and documentation.
+
+Hardware components include all schematics, PCB designs, mechanical drawings, and related design files.
+
+## Full License Terms
+
+Complete license texts are located in the `LICENSES/` directory:
+
+- `LICENSES/LICENSE_SW` - GNU GPL v3.0
+- `LICENSES/LICENSE_HW` - CERN OHL-S v2
+
+These license files contain the authoritative terms and conditions.
