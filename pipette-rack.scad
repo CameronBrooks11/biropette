@@ -28,8 +28,8 @@ stability = 2; // [1:4]
 tol = 0.4; // [0.1,0.2,0.3,0.4,0.5]
 
 /* [Preview Controls:] */
-show_partA = true; // [true,false]
-show_partB = true; // [true,false]
+show_top_beam = true; // [true,false]
+show_side_support = true; // [true,false]
 
 // -----------------------------------------------------------------------------
 // CUSTOMIZER CUTOFF: modify below at your own risk
@@ -135,7 +135,7 @@ module top_beam_cutouts() {
 }
 
 // Emit Part A
-if (show_partA)
+if (show_top_beam)
   difference() { top_beam(); top_beam_cutouts(); }
 
 // ==============================
@@ -156,7 +156,7 @@ module side_support() {
     cube([foot_length, foot_width, wall_z], center=true);
 }
 
-if (show_partB)
+if (show_side_support)
   side_support();
 
 // ==============================
