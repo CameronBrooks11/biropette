@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Micropipette Rack
-// Original: PIPETTE RACK v1 (2014-02-24) by Tom Baden (Thingiverse ID: tbaden)
+// Original: PIPETTE RACK v1 (2014-02-24) by Tom Baden 
+// Thingiverse: https://www.thingiverse.com/thing:257254
 // Inspired by kwalus (http://www.thingiverse.com/thing:64977)
 ////////////////////////////////////////////////////////////////////////////////
 
