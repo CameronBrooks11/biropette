@@ -4,8 +4,10 @@
 // hardened; the diameters below are standard sizes in that series. The m6
 // limits are ISO 286-2 (transcribed; the 6 mm row matches the Ganter
 // DIN 6325 datasheet, +0.004/+0.012 mm [secondary]).
-// length: undef until stock lengths are checked against a supplier; the
-// report gives the minimum length a build needs.
+// lengths: stock lengths seen in supplier listings [secondary], read
+// 2026-11-07. d4: 4x36 Fusion Fixings, 4x40 eHorst 1055751 / Kent / Ameco;
+// Ganter's range for d4 ends at 40. d8: 8x50 Kent, 8x60 Olander, 8x70
+// Ameco, 8x80 eHorst 1055776. undef where no listing has been checked.
 // Hardened alloy steel corrodes; a stainless pin (ISO 8734 grade C1) is the
 // alternative to register once a supplier listing is in hand.
 
@@ -17,14 +19,21 @@ function m6_limits(d) =
   : d <= 18 ? [0.007, 0.018]
   : undef;
 
-function _dowel(d) = [
+function _dowel(d, lengths = undef) = [
   ["name", str("dowel_", d)],
   ["standard", "DIN 6325 / ISO 8734"],
   ["d", d],
   ["tolerance", "m6"],
   ["deviation", m6_limits(d)],
   ["material", "hardened steel"],
-  ["length", undef],
+  ["lengths", lengths],
 ];
 
-pistons = [_dowel(3), _dowel(4), _dowel(5), _dowel(6), _dowel(8), _dowel(10)];
+pistons = [
+  _dowel(3),
+  _dowel(4, [36, 40]),
+  _dowel(5),
+  _dowel(6),
+  _dowel(8, [50, 60, 70, 80]),
+  _dowel(10),
+];

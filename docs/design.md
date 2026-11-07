@@ -71,7 +71,7 @@ parts that set accuracy are bought, and printed parts only locate them.
   push button ─┐
                │  plunger rod
    ┌───────────┴───────────┐
-   │ volume spindle (metal │ ── sets the UPPER stop; turning it sets the stroke
+   │ hollow threaded sleeve│ ── sets the UPPER stop; turning it sets the stroke
    │ thread) + detent      │
    │ counter / scale       │
    │ measuring spring      │ ── returns the piston to the upper stop
@@ -105,6 +105,93 @@ parts that set accuracy are bought, and printed parts only locate them.
   stroke repeatability is a few hundredths of a millimetre, so both stops are
   metal: the thread, a pin or a hard shoulder.
 
+### 4.1 The stop chain
+
+The volume is set with a **hollow threaded sleeve**, in the manner of a
+commercial micrometer pipette. The parts that set the stroke form a closed
+chain of metal parts:
+
+```
+            knob (printed, clamped to the sleeve; carries the scale)
+   ┌──────────────┐
+   │ hollow sleeve│  turns in the nut; its lower face is the UPPER STOP
+   │   ┌──────┐   │
+   │   │ nut  │   │  fixed in the body
+   │   └──┬───┘   │
+   │   spacer     │  metal: carries the first-stop seat
+   │      │       │
+   │   collar ↕   │  clamped on the plunger rod; travels between the stops
+   │   ───────    │  ← first-stop washer, held up against the seat by
+   │   blow-out   │    the preloaded blow-out spring
+   │   spring     │
+   └──────────────┘
+```
+
+- **The chain.** The stroke is the gap between the sleeve's lower face and
+  the first-stop washer, less the collar's thickness. Every part in that loop
+  is metal: sleeve, nut, spacer, washer and collar. The blow-out spring's
+  preload holds the chain closed against the nut, so the printed body only
+  has to keep the nut from coming out. The body is outside the loop.
+- **Why printed parts are kept out of it.** A printed part in the loop adds
+  its thermal expansion and creep to the stroke. PLA expands about
+  68 × 10⁻⁶ /K [secondary, typical datasheet value]. Over a 30 mm span that
+  is about 2 µm/K [derived], against a stroke budget of about 45 µm (§5).
+  Creep under the spring preload has no budget at all.
+- **Preload.** The blow-out spring's preload must exceed the measuring
+  spring's force at full stroke plus the thumb force a user applies at the
+  first stop. Otherwise the washer leaves its seat and the first stop moves.
+- **Calibration offset.** The knob is clamped to the sleeve. Loosening it and
+  turning it re-zeroes the scale without moving the stop, as Gilson's
+  recalibration does [primary, Pipetman P manual]. The gain is set by the
+  scale (§5).
+- **Plunger rod and piston.** These are separate parts, because stock decides
+  it:
+  - The largest bought hollow sleeve found has about a 7 mm bore (an M10×1
+    lamp tube [secondary]), and no bought sleeve clears an 8 mm pin.
+  - DIN 6325 Ø4 pins stop at 40 mm long [secondary, supplier listings].
+
+  So a Ø4 stainless rod passes through the sleeve and carries the collar
+  and, below, the piston pin. The pin has its own guide and seal, so the
+  joint between rod and pin can float. The collar is clamped where assembly
+  puts it: its position sets nothing.
+
+### 4.2 Forces and seal friction
+
+What a user's thumb feels is set by the springs and the seal friction:
+
+| Quantity | P200 | P1000 | Source |
+|---|---|---|---|
+| Commercial force to the first stop | 4.2–7.0 N | 8.7 N | [primary] Lichty et al. 2011 (200 µL); Asundi et al. 2005 (Gilson P-1000) |
+| Commercial blow-out force | 11.8–32.4 N | 20–35 N | same |
+| Recommended ceiling | 15.7 N | 15.7 N | [primary, vendor] Rainin: 20 % of women's pinch strength |
+| Seal running friction (planning estimate) | 1.55 N | 3.09 N | [derived] Parker f_c at 10 % squeeze × π·d |
+
+The springs have to satisfy four conditions at once:
+
+1. **Return.** The measuring spring at the upper stop must beat seal friction
+   by a margin. Otherwise the piston stops short and the pipette draws less
+   than it is set to.
+2. **First stop.** The spring force at the first stop plus friction must stay
+   near commercial forces.
+3. **Blow-out step.** The blow-out preload must exceed the measuring force by
+   a step the thumb feels.
+4. **Blow-out end.** The force at the end of blow-out must stay under the
+   ceiling.
+
+The window between them is set by friction. With the Gutekunst springs
+registered, `just report` shows:
+
+- **P200** is just inside the window: 6.8 N at the first stop. The return
+  margin and the blow-out ceiling are each missed by a few tenths of a
+  newton.
+- **P1000** does not close at the estimated friction: 12.1 N at the first
+  stop, against a commercial 8.7 N.
+
+The friction figure comes from Parker's coefficients for lubricated
+hydraulic service, so it is a planning estimate. **Measuring the real
+friction of the seal is therefore the next experiment.** The springs are
+chosen after it.
+
 ## 5. Sizing
 
 Swept volume is V = (π/4)·d²·L, where d is the piston diameter and L the
@@ -122,15 +209,20 @@ stroke (1 µL = 1 mm³). These figures are [derived] from `scripts/sizing.py`:
 - **Same stroke, same tolerance.** The random limit is 0.3 % of nominal for
   both sizes. So at the same stroke both need the same stroke repeatability:
   0.3 % of L, before seal friction, backlash or user force take any of it.
-- **Spindle pitch.** Volume per turn of the spindle at a 15 mm stroke is
-  [derived]:
+- **Sleeve pitch.** Volume per turn is piston area × pitch [derived,
+  `just report`]:
 
-  | Size | M3 (0.5 mm) | M4 (0.7 mm) | M5 (0.8 mm) |
-  |---|---|---|---|
-  | P200 | 6.7 µL | 9.3 µL | 10.7 µL |
-  | P1000 | 33 µL | 47 µL | 53 µL |
+  | Size | Volume per turn (M10×1 sleeve) | Turns over the range |
+  |---|---|---|
+  | P200 (Ø4) | 12.6 µL | 14.3 |
+  | P1000 (Ø8) | 50.3 µL | 17.9 |
 
-  The detent count per turn follows from the display increment we choose.
+  With these figures, a 22 mm knob puts the graduations 1.1 mm apart
+  (P200, 0.2 µL) and 2.75 mm apart (P1000, 2 µL).
+- **Volume is not a whole number of turns.** Piston area involves π, so no
+  standard pitch gives a whole number of microlitres per turn. The scale is
+  therefore drawn from the computed volume per turn, as a helix read
+  against a fixed index. It is not a fixed count of marks per turn.
 - **Captive air.** The air between the piston and the liquid is compressed by
   the liquid column lifted into the tip [primary, BRAND technical note]. The
   delivered volume falls short by about ΔV ≈ V_D·ρgh/(p_a − ρgh), where V_D is
@@ -170,8 +262,9 @@ value no source states is left `undef`, and reading it stops the build.
 |---|---|---|
 | Piston | diameter and tolerance class, length, material, surface | Ground dowel pin, DIN 6325 / ISO 8734 m6, e.g. 6 mm is +0.004/+0.012 mm [secondary, Ganter datasheet]; precision ground stainless shaft g6/h6. **Open:** the diameters on offer limit the stroke choice. |
 | Seal | inner diameter, cross-section, material, hardness, squeeze band | Metric and AS568 O-rings; PTFE seal plus O-ring energiser |
-| Spring | outer diameter, wire, free length, rate, solid length | Measuring spring and blow-out spring as a pair |
-| Spindle thread | thread, pitch, length, material | M3 / M4 / M5 stainless, or a fine pitch |
+| Spring | wire, outer diameter, largest pin it fits over, free length, minimum length, force there, rate | Gutekunst stainless stock springs: six measuring and six blow-out candidates (`cad/purchased/springs.scad`) |
+| Sleeve | thread, pitch, outer and inner diameter, material, length | M10×1 hollow lamp tube (bore about 7 mm; measure it), 1/8-27 IPS thin-wall nipple. Fully threaded stock lengths are still open. |
+| Collar | bore, outer diameter, width, screw | Ruland MSC-4-SS (Ø4 bore, OD 8, 5 wide) |
 | Tip | brand, size, collar outer diameter, inner diameter at the mouth and 4 / 8 mm in, length | VWR, Ward's Science, generic, at 200 and 1000 µL. **Every dimension [measured]; none recorded yet.** |
 | Fasteners | standard and size | As needed |
 

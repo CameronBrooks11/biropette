@@ -26,9 +26,9 @@ for every number, is `docs/design.md`. Read it before changing the model.
   - `cad/layout.scad` has `layout()`, which derives everything once.
     `cad/report.scad` prints a layout.
   - `cad/purchased/<kind>s.scad` holds bought-part records (pistons,
-    O-rings, threads, tips), data only.
+    O-rings, sleeves, collars, springs, tips), data only.
   - `cad/data/` holds requirements and reference data (sizes, ISO 8655
-    limits).
+    limits, thumb forces and seal friction).
   - `cad/lib/struct.scad` has the record accessors `get` / `known` /
     `by_name`.
   - Planned: `cad/parts/`, one printed part per file, each drawing from its
@@ -80,7 +80,7 @@ open-source-bioreactor (`docs/design-conventions.md`).
 ## Constraints
 
 - The parts that set accuracy are bought: the piston, the seals, the stops
-  and the spindle thread. Printed faces locate them and never set the stroke
+  and the sleeve thread. Printed faces locate them and never set the stroke
   (`docs/design.md` §4–5).
 - OpenSCAD 2021.01 exits 0 on undefined variables, unknown modules and failed
   asserts. Never trust its exit status; use `just check`.
