@@ -20,18 +20,30 @@ for every number, is `docs/design.md`. Read it before changing the model.
 
 - `cad/v0/` holds the original Biropette and its exports. It is frozen and
   kept for comparison and attribution. Do not edit it.
-- `cad/` holds the v1 model (not yet written). Planned shape:
-  - `cad/main.scad` is the only file that draws.
-  - `cad/purchased/<kind>s.scad` holds bought-part records, data only.
-  - `cad/parts/` holds one printed part per file, each drawing from its spec.
+- `cad/` holds the v1 model:
+  - `cad/main.scad` is the only file that draws. It holds the Customizer and
+    a `part` selector; today the only part is `report`.
+  - `cad/layout.scad` has `layout()`, which derives everything once.
+    `cad/report.scad` prints a layout.
+  - `cad/purchased/<kind>s.scad` holds bought-part records (pistons,
+    O-rings, threads, tips), data only.
+  - `cad/data/` holds requirements and reference data (sizes, ISO 8655
+    limits).
+  - `cad/lib/struct.scad` has the record accessors `get` / `known` /
+    `by_name`.
+  - Planned: `cad/parts/`, one printed part per file, each drawing from its
+    spec.
 - `docs/design.md` is the design basis. `docs/v0/` holds the original guide.
 - `scripts/render.sh` is the render gate. `scripts/sizing.py` produces the
   figures quoted in the design basis.
 
 ## Commands
 
-- `just check`: render every entry to CSG and fail on any OpenSCAD warning or
-  error, or on output with no geometry. This is the CI gate.
+- `just check`: render every v0 entry to CSG and derive every registered size
+  through `cad/main.scad`. It fails on any OpenSCAD warning or error, or on
+  output with no geometry. This is the CI gate.
+- `just report <size>`: print the derived figures, the parts to buy, the
+  departures and what cannot be evaluated yet.
 - `just test`: export every entry to STL and require a manifold mesh (about
   1 min).
 - `python3 scripts/sizing.py`: sizing figures.

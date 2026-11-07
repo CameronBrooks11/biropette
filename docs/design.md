@@ -149,6 +149,17 @@ stroke (1 µL = 1 mm³). These figures are [derived] from `scripts/sizing.py`:
   corrected it by scaling the printed graduations by 1.027 (to +0.36 %)
   [primary, Brennan et al. 2018, Table 1].
 
+- **Pin tolerance is a gain error.** Volume scales with d², so the pin's
+  m6 band scales every reading. A calibration offset cannot remove it. The
+  numbers are [derived] by `just report`:
+  - A scale built on the nominal diameter would deliver 0.40 % more than set
+    on a 4 mm pin, which is 0.8 µL of the P200's ±1.6 µL. On an 8 mm pin it
+    is 0.26 %, or 2.6 µL of the P1000's ±8 µL.
+  - Built on the middle of the band, the scale leaves ±0.2 % (±0.4 µL) on the
+    P200 and ±0.11 % (±1.1 µL) on the P1000.
+  - So the scale uses the band's middle diameter, and the calibration
+    procedure needs a gain check at two volumes, not only an offset.
+
 ## 6. Purchased parts
 
 Each kind of bought part is a registry of records. A record states a real,
