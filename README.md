@@ -36,3 +36,10 @@ Started from at v16 from:
 and the rack from:
 
 - https://www.thingiverse.com/thing:257254
+
+## License
+
+The v1 redesign is GPL-3.0-or-later (software) and CERN-OHL-S-2.0 (hardware);
+parametric CAD source is under both. The original Biropette files in `cad/v0/`,
+`docs/v0/` and `assets/images/` are adapted from BadenLab's work and stay under
+CC BY-SA 4.0. See [LICENSING.md](LICENSING.md) for what applies where.

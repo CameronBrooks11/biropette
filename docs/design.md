@@ -216,8 +216,8 @@ The 2022 design is the starting reference for v2 (multichannel).
 
 ## 9. Open questions
 
-1. **Upstream licence.** The upstream licence of Thingiverse things 255519
-   and 257254 is unconfirmed. It decides how the v0 lineage can be licensed.
+1. ~~Upstream licence~~: settled. Both Thingiverse things are CC BY-SA 4.0,
+   so v0 keeps that licence and v1 follows the lab policy (`LICENSING.md`).
 2. **Stroke length**, which is limited by the piston diameters actually on
    offer (section 6).
 3. **Seal choice**, an O-ring or a PTFE seal with an O-ring, and the
