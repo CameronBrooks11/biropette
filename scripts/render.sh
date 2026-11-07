@@ -1,30 +1,42 @@
 #!/usr/bin/env bash
 # Render OpenSCAD entry files and fail on anything OpenSCAD only warns about.
 #
-# usage: scripts/render.sh <csg|stl> <outdir> <file.scad>...
+# usage: scripts/render.sh <csg|stl|echo> <outdir> [-D 'var=value']... <file.scad>...
 #
 # OpenSCAD exits 0 on a missing include, an unknown module, an undefined
 # variable and a failed assert, so the exit status is not trusted: stderr is
-# searched for WARNING/ERROR, the output must be non-empty, and an STL export
-# must report a manifold ("Simple: yes") result.
+# searched for WARNING/ERROR, the output must be non-empty, a CSG must
+# contain a primitive, and an STL export must report a manifold
+# ("Simple: yes") result. Each -D applies to every file and is added to the
+# output name.
 set -euo pipefail
 
-fmt=${1:?usage: render.sh <csg|stl> <outdir> <file.scad>...}
-out=${2:?usage: render.sh <csg|stl> <outdir> <file.scad>...}
+usage="usage: render.sh <csg|stl|echo> <outdir> [-D 'var=value']... <file.scad>..."
+fmt=${1:?$usage}
+out=${2:?$usage}
 shift 2
+case "$fmt" in csg | stl | echo) ;; *) echo "render.sh: format must be csg, stl or echo" >&2; exit 64 ;; esac
+
+defines=()
+tag=""
+while [ "$#" -gt 0 ] && [ "$1" = "-D" ]; do
+    [ "$#" -ge 2 ] || { echo "$usage" >&2; exit 64; }
+    defines+=(-D "$2")
+    tag="$tag-$(printf '%s' "$2" | tr -c 'A-Za-z0-9_.' '_')"
+    shift 2
+done
 [ "$#" -gt 0 ] || { echo "render.sh: no files given" >&2; exit 64; }
-case "$fmt" in csg | stl) ;; *) echo "render.sh: format must be csg or stl" >&2; exit 64 ;; esac
 
 mkdir -p "$out"
 # 2021.01 cannot open a relative -o path for an input in a subdirectory.
 out=$(cd "$out" && pwd)
 fail=0
 for f in "$@"; do
-    name=$(basename "$f" .scad)
+    name=$(basename "$f" .scad)$tag
     target="$out/$name.$fmt"
     log="$out/$name.$fmt.log"
     status=0
-    openscad --hardwarnings -o "$target" "$f" >"$log" 2>&1 || status=$?
+    openscad --hardwarnings "${defines[@]}" -o "$target" "$f" >"$log" 2>&1 || status=$?
     problem=""
     if [ "$status" -ne 0 ]; then
         problem="exit $status"
@@ -39,11 +51,11 @@ for f in "$@"; do
         problem="not manifold"
     fi
     if [ -n "$problem" ]; then
-        echo "FAIL $f ($problem)"
+        echo "FAIL $f${tag:+ ($tag)} ($problem)"
         grep -E 'WARNING|ERROR' "$log" || true
         fail=1
     else
-        echo "ok   $f"
+        echo "ok   $f${tag:+ ($tag)}"
     fi
 done
 exit "$fail"
