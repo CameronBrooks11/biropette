@@ -33,6 +33,14 @@ test:
         scripts/render.sh stl build/stl -D "size=\"$s\"" -D "rig_variant=\"$v\"" -D "part=\"$p\"" cad/main.scad; \
     done; done; done
 
+[doc("Export every printed part to build/print/<size>-<part>-<variant>.stl, checked like just test")]
+print:
+    for s in {{ sizes }}; do for v in {{ rig_variants }}; do for p in {{ rig_parts }}; do \
+        scripts/render.sh stl build/print/raw -D "size=\"$s\"" -D "rig_variant=\"$v\"" -D "part=\"$p\"" cad/main.scad; \
+        cp "build/print/raw/main-size__${s}_-rig_variant__${v}_-part__${p}_.stl" "build/print/${s}-${p//_/-}-${v}.stl"; \
+    done; done; done
+    @ls -l build/print/*.stl
+
 [doc("Print the derived figures, the parts to buy and the open items for one size")]
 report size="P200":
     scripts/render.sh echo build/report -D 'size="{{ size }}"' cad/main.scad

@@ -17,11 +17,45 @@ It comes in two gland variants:
 `just report <size>` prints, for each variant: what to print, drill and buy;
 the cap gap; and the leak-test travel and the reading to expect.
 
+## Parts
+
+These are for the full set of four rigs: P200 and P1000, each in both
+variants. Each row states the requirement and then one candidate that meets
+it; any part meeting the requirement will do. The candidates and prices are
+McMaster-Carr listings, read 2026-11-08 [secondary].
+
+| Requirement | Used in | Candidate | Pack | Price |
+|---|---|---|---|---|
+| Dowel pin Ø4 m6 × 36, hardened (DIN 6325 / ISO 8734) | P200 piston | McMaster 91595A184 | 25 | $9.40 |
+| Dowel pin Ø8 m6 × 60, hardened (DIN 6325 / ISO 8734) | P1000 piston | McMaster 91595A585 | 10 | $17.14 |
+| O-ring 4 × 1.5 mm NBR 70A | P200 seal, every port plug | McMaster 9262K422 | 100 | $6.42 |
+| O-ring 8 × 1.5 mm NBR 70A | P1000 seal | McMaster 9262K445 | 100 | $7.17 |
+| Socket head screw M3 × 10, ISO 4762, stainless | radial caps | McMaster 91292A113 | 100 | $7.11 |
+| Socket head screw M3 × 12, ISO 4762, stainless | axial caps | McMaster 91292A114 | 100 | $7.11 |
+| Socket head screw M4 × 6, ISO 4762, stainless | port plugs | McMaster 91292A107 | 100 | $9.09 |
+| Drill 4.1 mm, jobber, HSS | P200 guide bore | McMaster 2958A73 | 1 | $3.57 |
+| Drill 8.1 mm, jobber, HSS | P1000 guide bore | McMaster 2958A128 | 1 | $10.70 |
+
+**Optional: stainless pins.** A pipette is wiped with ethanol and bleach, so
+the pin material is a test variable too. Both are 18-8 stainless, ISO 2338
+m6:
+
+- Ø4 × 36: McMaster 91585A487, 10 for $11.23.
+- Ø8 × 60: McMaster 91585A867, 5 for $20.29.
+
+**Tools assumed on hand:**
+
+- calipers;
+- a metric feeler gauge set (axial variant);
+- a scale reading 0.1 g or finer;
+- silicone grease, if lubricated runs are tested.
+
 ## Make
 
-1. Print `rig_body` and `rig_cap` for the size and variant (Customizer:
-   `size`, `rig_variant`, `part`). Print the body base down and the cap
-   flange down, as exported.
+1. Print `rig_body` and `rig_cap` for the size and variant. `just print`
+   exports all eight to `build/print/`; the Customizer (`size`,
+   `rig_variant`, `part`) gives one at a time. Print the body base down and
+   the cap flange down, as exported.
 2. Drill the guide bore to the size the report gives (pin + 0.1 mm) from the
    top, by hand or at low speed. The pocket is not drilled.
 3. **Radial only:** measure the pocket diameter (calipers, inside jaws, or

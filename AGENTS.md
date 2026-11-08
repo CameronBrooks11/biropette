@@ -22,7 +22,7 @@ for every number, is `docs/design.md`. Read it before changing the model.
   kept for comparison and attribution. Do not edit it.
 - `cad/` holds the v1 model:
   - `cad/main.scad` is the only file that draws. It holds the Customizer and
-    a `part` selector; today the only part is `report`.
+    a `part` selector: `report` and the seal-rig parts.
   - `cad/layout.scad` has `layout()`, which derives everything once.
     `cad/report.scad` prints a layout.
   - `cad/purchased/<kind>s.scad` holds bought-part records (pistons,
@@ -48,6 +48,8 @@ for every number, is `docs/design.md`. Read it before changing the model.
   departures and what cannot be evaluated yet.
 - `just test`: export every v0 entry and every printed part to STL and
   require a manifold mesh (about 1 min).
+- `just print`: export every printed part to
+  `build/print/<size>-<part>-<variant>.stl`, checked like `just test`.
 - `python3 scripts/sizing.py`: sizing figures.
 
 Run `just check && just test` before every commit.
