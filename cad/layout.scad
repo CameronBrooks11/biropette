@@ -16,6 +16,7 @@ include <purchased/sleeves.scad>
 include <purchased/collars.scad>
 include <purchased/springs.scad>
 include <purchased/tips.scad>
+include <purchased/fasteners.scad>
 
 // [reasoned] constants, one line of reason each.
 fill_target = 0.75; // gland fill to design to: under oring_fill_max with room for tolerance
@@ -202,4 +203,119 @@ function layout(size_name, piston = "auto", oring = "auto", sleeve = "m10x1_lamp
     ["tip_missing", tip_missing],
     ["departures", departures],
     ["cannot_evaluate", cannot_evaluate],
+  ];
+
+// ---------------------------------------------------------------------------
+// Seal rig: a block holding one size's piston pin and seal, to measure the
+// seal's running and break-out friction (stand it on a scale, press the
+// pin) and its leak (plug the port, displace the pin, watch the force
+// decay). Procedure: docs/seal-rig.md.
+//
+// variant "radial": the pocket diameter sets the squeeze; the cap bottoms
+//   on the body. The pocket is printed undersize and drilled to size.
+// variant "axial": the O-ring sits free in the pocket and the cap's spigot
+//   compresses it; the gap left under the cap reads the compression.
+
+// [reasoned] rig constants, one line of reason each.
+rig_travel = 10; // mm of pin travel tested: friction does not depend on it, and it keeps stock pins long enough
+rig_floor_gap = 2; // mm between the pin at its lowest and the chamber floor
+rig_protrude = 8; // mm of pin above the cap at its lowest, to press on
+rig_wall = 3; // mm of printed wall around any bore or pocket
+rig_cap_t = 4; // mm cap flange
+rig_screw_engage = 6; // mm a screw self-taps into PLA: two diameters of M3
+rig_axial_max = 0.30; // axial compression of the cross-section the axial cap can reach
+rig_drill_allow = 0.2; // mm a printed hole is left undersize, to be drilled to size
+rig_leak_kpa = 5; // kPa leak-test pressure: about 12x the 0.4 kPa a pipette sees, for a readable force
+guide_clearance = 0.1; // mm on diameter the guide bore is drilled over the pin: a sliding fit for an m6 pin
+
+function seal_rig(L, variant) =
+  let(
+    d = get(L, "d"),
+    o = known(L, "oring") ? get(L, "oring") : undef,
+    pin = known(L, "pin_stock") ? get(L, "pin_stock") : undef
+  )
+  assert(variant == "radial" || variant == "axial", str("unknown rig variant '", variant, "'"))
+  assert(!is_undef(o), "the seal rig needs a registered O-ring that fits the pin")
+  assert(!is_undef(pin), "the seal rig needs a stock pin length")
+  let(
+    cs = get(o, "cs"),
+    ood = get(o, "id") + 2 * cs,
+    m3 = by_name(fasteners, "M3"),
+    m4 = by_name(fasteners, "M4"),
+    plug_o = by_name(orings, "metric_4x1.5"),
+
+    radial = variant == "radial",
+    pocket_d = radial ? get(L, "gland_groove_d") : ood + 0.2,
+    pocket_h = radial ? get(L, "gland_w") : cs,
+    spigot_h = radial ? 0 : rig_axial_max * cs,
+    spigot_d = pocket_d - 0.3,
+    cap_gap = spigot_h, // under the cap with the ring uncompressed
+
+    guide_d = d + guide_clearance,
+    guide_len = guide_ratio * d,
+    chamber_d = d + 1,
+    chamber_h = rig_travel + rig_floor_gap,
+
+    // Plug: an M4 screw from below, sealed by a 4 x 1.5 O-ring in a seat
+    // compressed 25 % (static, [primary] Parker static band 22-32 %).
+    seat_d = get(plug_o, "id") + 2 * get(plug_o, "cs") + 0.3,
+    seat_h = 0.75 * get(plug_o, "cs"),
+    recess_d = get(m4, "dk") + 2,
+    recess_h = get(m4, "k") + 1,
+    floor_t = 4,
+    plug_len_need = seat_h + floor_t,
+    plug_len = stock_at_least(get(m4, "lengths"), plug_len_need),
+
+    bolt_r = pocket_d / 2 + rig_wall + get(m3, "clearance") / 2,
+    body_d = 2 * (bolt_r + get(m3, "dk") / 2 + 1.5),
+    body_h = recess_h + floor_t + chamber_h + guide_len + pocket_h,
+    screw_need = rig_cap_t + cap_gap + rig_screw_engage,
+    screw_len = stock_at_least(get(m3, "lengths"), screw_need),
+
+    pin_need = rig_travel + guide_len + pocket_h + cap_gap + rig_cap_t + rig_protrude,
+
+    // Leak test: chamber air at the pin's highest position.
+    v_air = area(chamber_d) * chamber_h - area(d) * rig_floor_gap + (area(guide_d) - area(d)) * guide_len,
+    leak_dx = rig_leak_kpa / 101.325 * v_air / area(d),
+    leak_force = rig_leak_kpa * 1e3 * area(d) * 1e-6
+  )
+  assert(pin >= pin_need, str("the ", pin, " mm pin is shorter than the ", pin_need, " mm the rig needs"))
+  assert(!is_undef(plug_len) && !is_undef(screw_len), "no stock screw length fits the rig")
+  assert(leak_dx < rig_travel, str("the leak test needs ", leak_dx, " mm of travel; the rig has ", rig_travel))
+  [
+    ["name", str(get(L, "name"), " seal rig, ", variant)],
+    ["variant", variant],
+    ["d", d],
+    ["oring", o],
+    ["pin", pin],
+    ["pin_need", pin_need],
+    ["guide_d", guide_d],
+    ["guide_len", guide_len],
+    ["chamber_d", chamber_d],
+    ["chamber_h", chamber_h],
+    ["pocket_d", pocket_d],
+    ["pocket_h", pocket_h],
+    ["spigot_d", spigot_d],
+    ["spigot_h", spigot_h],
+    ["cap_gap", cap_gap],
+    ["cap_t", rig_cap_t],
+    ["cap_hole_d", d + 0.6],
+    ["floor_t", floor_t],
+    ["seat_d", seat_d],
+    ["seat_h", seat_h],
+    ["recess_d", recess_d],
+    ["recess_h", recess_h],
+    ["port_pilot", get(m4, "pilot")],
+    ["plug_len", plug_len],
+    ["bolt_r", bolt_r],
+    ["screw_pilot", get(m3, "pilot")],
+    ["screw_clearance", get(m3, "clearance")],
+    ["screw_len", screw_len],
+    ["body_d", body_d],
+    ["body_h", body_h],
+    ["drill_allow", rig_drill_allow],
+    ["v_air", v_air],
+    ["leak_kpa", rig_leak_kpa],
+    ["leak_dx", leak_dx],
+    ["leak_force", leak_force],
   ];

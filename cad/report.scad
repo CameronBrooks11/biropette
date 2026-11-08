@@ -76,3 +76,26 @@ module report(L) {
   for (x = get(L, "departures")) echo(str("DEPARTURE: ", x));
   for (x = get(L, "cannot_evaluate")) echo(str("CANNOT EVALUATE: ", x));
 }
+
+// rig_report(s): print a seal_rig() spec: what to print, drill and buy, and
+// the numbers the test procedure needs.
+module rig_report(s) {
+  o = get(s, "oring");
+  radial = get(s, "variant") == "radial";
+  echo(str("=== ", get(s, "name"), " ==="));
+  echo(str("body d", _r(get(s, "body_d"), 1), " x ", _r(get(s, "body_h"), 1), " mm; cap ", get(s, "cap_t"), " mm",
+           radial ? "" : str(" with a ", _r(get(s, "spigot_h"), 2), " mm spigot")));
+  echo(str("DRILL: guide bore to ", _r(get(s, "guide_d"), 2), " mm"));
+  if (radial)
+    echo(str("MEASURE: seal pocket, printed at ", _r(get(s, "pocket_d"), 2), " mm; squeeze = 1 - (pocket - ",
+             get(s, "d"), ") / ", 2 * get(o, "cs"), " (", _pct(planning_squeeze), " at nominal)"));
+  if (!radial)
+    echo(str("SET: cap gap ", _r(get(s, "cap_gap"), 2), " mm = no compression; closing it by x mm compresses the ",
+             get(o, "cs"), " mm ring by x (", _r(100 / get(o, "cs"), 1), " % per mm)"));
+  echo(str("pin: ", get(s, "pin"), " mm stock (rig needs ", _r(get(s, "pin_need"), 1), ")"));
+  echo(str("leak test: plug the port, press the pin ", _r(get(s, "leak_dx"), 2), " mm from its highest position for ",
+           get(s, "leak_kpa"), " kPa; the scale should then read ", _r(get(s, "leak_force") * 1000 / 9.807, 1),
+           " g above the friction reading (", _r(get(s, "v_air"), 0), " uL of air)"));
+  echo(str("BUY: O-ring ", get(o, "standard"), "; O-ring 4 x 1.5 mm (port plug); 2 x ISO 4762 M3x",
+           get(s, "screw_len"), "; 1 x ISO 4762 M4x", get(s, "plug_len")));
+}

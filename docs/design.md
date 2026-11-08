@@ -189,8 +189,19 @@ registered, `just report` shows:
 
 The friction figure comes from Parker's coefficients for lubricated
 hydraulic service, so it is a planning estimate. **Measuring the real
-friction of the seal is therefore the next experiment.** The springs are
-chosen after it.
+friction of the seal is therefore the next experiment** (the seal rig,
+[seal-rig.md](seal-rig.md)). The springs are chosen after it.
+
+**The gland itself is in question.** With a 1.5 mm cross-section, a radial
+groove is about 1.35 mm deep. If a printed groove is off by ±0.1 mm, which
+is a typical FDM figure [reasoned, not cited], the squeeze moves by ±7 %
+and the planned 10 % becomes anything from 3 % to 17 %. That spans a leak
+at one end and P1000-level friction at the other. The rig therefore tests
+two variants side by side:
+
+- **Radial:** a groove printed at size, as the body would have.
+- **Axial:** the O-ring compressed by a cap, so the squeeze is tuned on the
+  bench, as in a stuffing box.
 
 ## 5. Sizing
 

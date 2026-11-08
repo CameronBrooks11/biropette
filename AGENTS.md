@@ -31,21 +31,23 @@ for every number, is `docs/design.md`. Read it before changing the model.
     limits, thumb forces and seal friction).
   - `cad/lib/struct.scad` has the record accessors `get` / `known` /
     `by_name`.
-  - Planned: `cad/parts/`, one printed part per file, each drawing from its
-    spec.
+  - `cad/parts/` holds the printed parts, one module per part, each drawing
+    from its spec. Today that is the seal rig (`seal_rig.scad`, spec
+    `seal_rig()` in `layout.scad`, procedure `docs/seal-rig.md`).
 - `docs/design.md` is the design basis. `docs/v0/` holds the original guide.
 - `scripts/render.sh` is the render gate. `scripts/sizing.py` produces the
   figures quoted in the design basis.
 
 ## Commands
 
-- `just check`: render every v0 entry to CSG and derive every registered size
-  through `cad/main.scad`. It fails on any OpenSCAD warning or error, or on
-  output with no geometry. This is the CI gate.
+- `just check`: render every v0 entry and every printed part to CSG, and
+  derive every registered size through `cad/main.scad`. It fails on any
+  OpenSCAD warning or error, or on output with no geometry. This is the CI
+  gate.
 - `just report <size>`: print the derived figures, the parts to buy, the
   departures and what cannot be evaluated yet.
-- `just test`: export every entry to STL and require a manifold mesh (about
-  1 min).
+- `just test`: export every v0 entry and every printed part to STL and
+  require a manifold mesh (about 1 min).
 - `python3 scripts/sizing.py`: sizing figures.
 
 Run `just check && just test` before every commit.

@@ -10,6 +10,10 @@ entries := "cad/v0/pipette.scad cad/v0/pipette-rack.scad"
 # The registered pipette sizes, each derived and reported by cad/main.scad.
 sizes := "P200 P1000"
 
+# Printed seal-rig parts and their gland variants (cad/parts/seal_rig.scad).
+rig_parts := "rig_body rig_cap"
+rig_variants := "axial radial"
+
 [private]
 default:
     @just --list
@@ -18,10 +22,16 @@ default:
 check:
     scripts/render.sh csg build/check {{ entries }}
     for s in {{ sizes }}; do scripts/render.sh echo build/check -D "size=\"$s\"" cad/main.scad; done
+    for s in {{ sizes }}; do for v in {{ rig_variants }}; do for p in {{ rig_parts }} rig_assembly; do \
+        scripts/render.sh csg build/check -D "size=\"$s\"" -D "rig_variant=\"$v\"" -D "part=\"$p\"" cad/main.scad; \
+    done; done; done
 
-[doc("Export every entry to STL and require a manifold mesh (about 1 min)")]
+[doc("Export every entry and printed part to STL and require a manifold mesh (about 1 min)")]
 test:
     scripts/render.sh stl build/stl {{ entries }}
+    for s in {{ sizes }}; do for v in {{ rig_variants }}; do for p in {{ rig_parts }}; do \
+        scripts/render.sh stl build/stl -D "size=\"$s\"" -D "rig_variant=\"$v\"" -D "part=\"$p\"" cad/main.scad; \
+    done; done; done
 
 [doc("Print the derived figures, the parts to buy and the open items for one size")]
 report size="P200":

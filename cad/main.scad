@@ -6,6 +6,7 @@
 
 include <layout.scad>
 include <report.scad>
+include <parts/seal_rig.scad>
 
 /* [Build] */
 // Pipette size
@@ -22,10 +23,20 @@ tip_brand = "generic"; // [vwr, wards, generic]
 measuring = "auto"; // [auto, VD-090G, VD-090Z, VD-121A, VD-117Q, VD-115G, VD-122A]
 // Blow-out spring; auto uses the size's default pairing
 blowout = "auto"; // [auto, VD-124, VD-115K, VD-143E, VD-150C, VD-153, VD-145H-10]
+// Seal rig gland variant
+rig_variant = "axial"; // [axial, radial]
 // What to produce
-part = "report"; // [report]
+part = "report"; // [report, rig_body, rig_cap, rig_assembly]
 
 L = layout(size, piston, oring, sleeve, tip_brand, measuring, blowout);
 
-if (part == "report") report(L);
+$fn = 96;
+
+if (part == "report") {
+  report(L);
+  rig_report(seal_rig(L, "axial"));
+  rig_report(seal_rig(L, "radial"));
+} else if (part == "rig_body") seal_rig_body(seal_rig(L, rig_variant));
+else if (part == "rig_cap") seal_rig_cap_print(seal_rig(L, rig_variant));
+else if (part == "rig_assembly") seal_rig_assembly(seal_rig(L, rig_variant));
 else assert(false, str("unknown part '", part, "'"));
