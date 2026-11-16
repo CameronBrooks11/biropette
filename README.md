@@ -20,3 +20,17 @@ Started from at v16 from:
 and the rack from:
 
 - https://www.thingiverse.com/thing:257254
+
+## Licence
+
+[CC BY-SA 4.0](LICENSE), the licence of the original it is adapted from:
+
+- "Biropette: customisable, high precision pipette." by BadenLab (Tom Baden),
+  <https://www.thingiverse.com/thing:255519>, CC BY-SA 4.0.
+- "Rack for Biropettes, Customizable" by BadenLab (Tom Baden),
+  <https://www.thingiverse.com/thing:257254>, CC BY-SA 4.0.
+
+Changes, 2025: the OpenSCAD source was reformatted, restructured and renamed;
+the rack was revised; the assembly guide was transcribed to Markdown from the
+v15 PDF; the models were exported to STL and 3MF. These changes are also
+licensed under CC BY-SA 4.0.
