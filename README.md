@@ -21,6 +21,19 @@ and the rack from:
 
 - https://www.thingiverse.com/thing:257254
 
+## Printing
+
+`just prints` renders the pipette's parts A to G and the rack's top beam and
+side support into `prints/`, one STL each. The first set was printed on a
+Prusa i3 MK3S in PrusaSlicer 2.9.1:
+
+- pipette: 0.4 mm nozzle, profile 0.15mm QUALITY @MK3, Prusa PETG at
+  240 °C, bed 90 °C; 0.15 mm layers, 2 perimeters, 5 bottom and 6 top solid
+  layers, 15 % gyroid infill, no supports.
+- rack: 0.8 mm nozzle, profile 0.40mm QUALITY @0.8 nozzle, Prusa PETG at
+  250 °C, bed 90 °C; 0.4 mm layers, 3 perimeters, 3 bottom and 4 top solid
+  layers, 25 % adaptive cubic infill, no supports.
+
 ## Licence
 
 [CC BY-SA 4.0](LICENSE), the licence of the original it is adapted from:
